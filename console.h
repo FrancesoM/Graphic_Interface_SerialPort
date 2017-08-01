@@ -80,9 +80,9 @@ class Console : public QCustomPlot
     Q_OBJECT
 
 public:
-    explicit Console(QCustomPlot *parent = nullptr);
+    explicit Console(int n_ch, int y_min, int y_max, QCustomPlot *parent = nullptr);
 
-    void putData(QVector<qint16> data);
+    void putData(QVector<float> data);
 
      void clearData();
 
@@ -98,6 +98,7 @@ protected:
 
 private:
     bool localEchoEnabled;
+    int n_channels;
     //We need the vecto
     //QVector < double > distance = QVector<double>(N_DISTANCES);
     //QVector < Qvector<int> > indexes = QVector < QVector<int>(2) >(N_DISTANCES);

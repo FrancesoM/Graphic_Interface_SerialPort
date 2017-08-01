@@ -55,15 +55,17 @@
 
 #include <QtCore/QDebug>
 
-Console::Console(QCustomPlot *parent)
+Console::Console(int n_ch, int y_min, int y_max, QCustomPlot *parent)
 {
-    for(int i = 0;i<NCHANNEL;i++){
+    n_channels = n_ch;
+
+    for(int i = 0;i<n_channels;i++){
         this->addGraph();
         this->graph(i)->setPen(QPen(this->colorVector[i]));
     }
 
     this->xAxis->setRange(0,HISTORY);
-    this->yAxis->setRange(-500,+500);
+    this->yAxis->setRange(y_min,y_max);
 
     //We want to define the indexes used to calculate the distances
     //Example: we want to find the distances using channels 3,5,7, so we
@@ -71,11 +73,11 @@ Console::Console(QCustomPlot *parent)
 
 }
 
-void Console::putData(QVector<qint16> data)
+void Console::putData(QVector<float> data)
 {
     //For each channel, push the new value that has been read
     //Then plot the corresponding channel
-    for(int i = 0;i<NCHANNEL;i++){
+    for(int i = 0;i<n_channels;i++){
         double temp = (double)data[i];
         this->channels[i].enqueue(temp);
         //We need a temporary t-axis
@@ -101,7 +103,7 @@ void Console::putData(QVector<qint16> data)
     //We use dequeue because when an element is read it is automatically removed
     //from the queue.
     if(channels[0].size() == HISTORY){
-        for(int i = 0;i<NCHANNEL;i++){
+        for(int i = 0;i<n_channels;i++){
             this->channels[i].dequeue();
         }
     }
@@ -109,8 +111,9 @@ void Console::putData(QVector<qint16> data)
 
 void Console::clearData(){
 
-    for(int i = 0;i<NCHANNEL;i++){
+    for(int i = 0;i<n_channels;i++){
         this->graph(i)->data()->clear();
+        this->channels[i].empty();
     }
 
     this->replot();

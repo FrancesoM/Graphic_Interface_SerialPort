@@ -63,6 +63,7 @@
 #include <QFile>
 
 #define NCHANNEL 8
+//#define CHECK_FRAME(buf) ((buf[0] == 0x00) && (buf[5] == 0x21) && (buf[6] == 0x21) && (buf[7] == 0x21) )
 
 QT_BEGIN_NAMESPACE
 
@@ -86,10 +87,16 @@ public:
     ~MainWindow();
 
 private slots:
-    void openSerialPort();
-    void closeSerialPort();
     void about();
+
     void readData();
+    void readDataGyro();
+
+    void openUH();
+    void closeUH();
+
+    void openGyro();
+    void closeGyro();
 
     void handleError(QSerialPort::SerialPortError error);
 
@@ -104,6 +111,10 @@ private slots:
 
 private:
     void initActionsConnections();
+    void openSerialPort(SettingsDialog *s, QSerialPort *port, Console *c, QString msg);
+    void closeSerialPort(QSerialPort *port, Console *c, QString msg);
+    //in case of an error both the ports must be closed
+    void closeSerialPort();
 
 private:
     void showStatusMessage(const QString &message);
@@ -117,7 +128,12 @@ private:
     QSerialPort *serial;
     QSerialPort *serialGyro;
     QQueue<quint8> bytesQueue;
-    QVector<qint16> yVec = QVector<qint16>(NCHANNEL);
+    QQueue<quint8> bytesQueueGyro;
+
+    //Fix this thing with a template, we need an instance of putData in the console
+    //That is able to take any kind of data.
+    QVector<float> yVec = QVector<float>(NCHANNEL);
+    QVector<float> currentAngle = QVector<float>(1);
 
     int flag_can_save;
     int counter_patient;
