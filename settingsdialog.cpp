@@ -60,7 +60,7 @@ QT_USE_NAMESPACE
 
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
+SettingsDialog::SettingsDialog(QString defaultPort,QString defaultBaud,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog)
 {
@@ -96,7 +96,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     //First search the com10 name in the combobox,
     //Then set the index of the combo box to the wanted name
     //Finally use the current text to update the settings.
-    int com10_index = ui->serialPortInfoListBox->findText("COM10");
+    int com10_index = ui->serialPortInfoListBox->findText(defaultPort);
     if(com10_index >= 0){
         ui->serialPortInfoListBox->setCurrentIndex(com10_index);
     }
@@ -104,7 +104,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     currentSettings.name = ui->serialPortInfoListBox->currentText();
 
     //initialize to baud115200
-    int baud115200_index = ui->baudRateBox->findText("115200");
+    int baud115200_index = ui->baudRateBox->findText(defaultBaud);
     if(baud115200_index >= 0){
         ui->baudRateBox->setCurrentIndex(baud115200_index);
     }

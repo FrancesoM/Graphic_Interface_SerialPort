@@ -16,7 +16,11 @@
   <widget class="QWidget" name="mainLayout">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QVBoxLayout" name="GraphLayout"/>
+     <layout class="QVBoxLayout" name="GraphLayoutPlaceHolder">
+      <item>
+       <layout class="QHBoxLayout" name="TwoGraphsLayout"/>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="LayoutControl">
@@ -101,6 +105,8 @@
     </property>
     <addaction name="actionConnect"/>
     <addaction name="actionDisconnect"/>
+    <addaction name="actionConnectGyro"/>
+    <addaction name="actionDisconnectGyro"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -109,6 +115,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionConfigure"/>
+    <addaction name="actionConfigureGyro"/>
     <addaction name="actionClear"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -132,6 +139,11 @@
    <addaction name="actionConnect"/>
    <addaction name="actionDisconnect"/>
    <addaction name="actionConfigure"/>
+   <addaction name="separator"/>
+   <addaction name="actionConnectGyro"/>
+   <addaction name="actionDisconnectGyro"/>
+   <addaction name="separator"/>
+   <addaction name="actionConfigureGyro"/>
    <addaction name="actionClear"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -184,7 +196,7 @@
   <action name="actionConfigure">
    <property name="icon">
     <iconset resource="terminal.qrc">
-     <normaloff>:/images/settings.png</normaloff>:/images/settings.png</iconset>
+     <normaloff>:/images/UHSett.ico</normaloff>:/images/UHSett.ico</iconset>
    </property>
    <property name="text">
     <string>&amp;Configure</string>
@@ -221,6 +233,33 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionConnectGyro">
+   <property name="icon">
+    <iconset resource="terminal.qrc">
+     <normaloff>:/images/connect.png</normaloff>:/images/connect.png</iconset>
+   </property>
+   <property name="text">
+    <string>Connect Gyro</string>
+   </property>
+  </action>
+  <action name="actionDisconnectGyro">
+   <property name="icon">
+    <iconset resource="terminal.qrc">
+     <normaloff>:/images/disconnect.png</normaloff>:/images/disconnect.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disconnect Gyro</string>
+   </property>
+  </action>
+  <action name="actionConfigureGyro">
+   <property name="icon">
+    <iconset resource="terminal.qrc">
+     <normaloff>:/images/GyroSett.ico</normaloff>:/images/GyroSett.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Configure Gyro</string>
    </property>
   </action>
  </widget>

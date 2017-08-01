@@ -28,3 +28,5 @@ RESOURCES += \
 
 target.path = DESTDIR
 INSTALLS += target
+
+DISTFILES +=

@@ -111,8 +111,11 @@ private:
     Ui::MainWindow *ui;
     QLabel *status;
     Console *console;
+    Console *consoleGyro;
     SettingsDialog *settings;
+    SettingsDialog *settingsGyro;
     QSerialPort *serial;
+    QSerialPort *serialGyro;
     QQueue<quint8> bytesQueue;
     QVector<qint16> yVec = QVector<qint16>(NCHANNEL);
 

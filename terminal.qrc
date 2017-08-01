@@ -3,10 +3,11 @@
         <file>images/connect.png</file>
         <file>images/disconnect.png</file>
         <file>images/application-exit.png</file>
-        <file>images/settings.png</file>
         <file>images/clear.png</file>
         <file>images/cal.png</file>
         <file>images/end.png</file>
         <file>images/play.png</file>
+        <file>images/UHSett.ico</file>
+        <file>images/GyroSett.ico</file>
     </qresource>
 </RCC>
