@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     console = new Console(8,-500,+500);
     console->setEnabled(false);
 
-    consoleGyro = new Console(1,150,250);
+    consoleGyro = new Console(1,-180,180);
     consoleGyro->setEnabled(false);
 
     ui->TwoGraphsLayout->addWidget(console);
@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //! [1]
     settings = new SettingsDialog("COM10","115200");
     settingsGyro = new SettingsDialog("COM4","115200");
+    flagGyro = 0;
 
     ui->actionConnect->setEnabled(true);
     ui->actionConnectGyro->setEnabled(true);
@@ -217,7 +218,7 @@ void MainWindow::readData()
             this->yVec[i] = (float)temp;
 
         }
-        //qDebug() << this->yVec << "\n";
+        qDebug() << this->yVec << "\n";
         console->putData(this->yVec);
     }
 
@@ -237,27 +238,59 @@ void MainWindow::readData()
 
 void MainWindow::readDataGyro()
 {
+    char received[4];
+
     QByteArray data = serialGyro->readAll();
     for(int i = 0;i<data.length();i++){
         //qDebug() << i << ": " << QString::number(data[i],16) << "\n";
         this->bytesQueueGyro.enqueue(data[i]);
     }
 
-    //qDebug() << bytesQueueGyro;
+    //stesso motivo di sotto, se è più piccolo del frame nn parte neanche il for
+    if(bytesQueueGyro.length() >= (3+2+4) ){
+        //tolgo la lunghezza del frame perchè nn ha senso e andrei outofbonds
+        for(int offset = 0;offset <= bytesQueueGyro.length() - (3+2+4); offset++){
+            if( bytesQueueGyro[offset]==0x00 &&
+                bytesQueueGyro[offset+1] == 0x00 &&
+                bytesQueueGyro[offset+6] == 0x21 &&
+                bytesQueueGyro[offset+7] == 0x21 &&
+                bytesQueueGyro[offset+8] == 0x21 ){
 
-    if(bytesQueueGyro.length() > 9){
-        //Read and in also go one step further (eliminate the first element)
-        if(bytesQueueGyro.dequeue() == 0x00){
-            if( (bytesQueueGyro[0] == 0x00) && (bytesQueueGyro[5] == 0x21) && (bytesQueueGyro[6] == 0x21) && (bytesQueueGyro[7] == 0x21) ){
-                currentAngle[0] = (bytesQueueGyro[4] << 24) | (bytesQueueGyro[3] << 16) | (bytesQueueGyro[2] << 8) | (bytesQueueGyro[1]);
-                qDebug() << currentAngle[0];
+                    received[3] = bytesQueueGyro[offset+5];
+                    received[2] = bytesQueueGyro[offset+4];
+                    received[1] = bytesQueueGyro[offset+3];
+                    received[0] = bytesQueueGyro[offset+2];
 
-                consoleGyro->putData(currentAngle);
+                    //Save the value
+                    currentAngle[0] = *(reinterpret_cast<float*>(received));
+                    //Plot the angle
+                    qDebug() << currentAngle;
+                    consoleGyro->putData(currentAngle);
+
+                    //Clean the queue up to the offset + the frame
+                    for(int i = 0;i<offset+(3+2+4);i++) bytesQueueGyro.dequeue();
+
             }
         }
-
     }
 
+//    if(bytesQueueGyro.length() > 9){
+//        //Read and in also go one step further (eliminate the first element)
+//        if(bytesQueueGyro.dequeue() == 0x00){
+//            if( (bytesQueueGyro[0] == 0x00) && (bytesQueueGyro[5] == 0x21) && (bytesQueueGyro[6] == 0x21) && (bytesQueueGyro[7] == 0x21) ){
+//                //currentAngle[0] = (bytesQueueGyro[4] << 24) | (bytesQueueGyro[3] << 16) | (bytesQueueGyro[2] << 8) | (bytesQueueGyro[1]);
+//                received[3] = bytesQueueGyro[4];
+//                received[2] = bytesQueueGyro[3];
+//                received[1] = bytesQueueGyro[2];
+//                received[0] = bytesQueueGyro[1];
+
+//                currentAngle[0] = *(reinterpret_cast<float*>(received));
+
+//                consoleGyro->putData(currentAngle);
+//            }
+//        }
+
+//    }
 
 
 }

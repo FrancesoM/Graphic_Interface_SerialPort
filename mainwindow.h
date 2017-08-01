@@ -119,6 +119,8 @@ private:
 private:
     void showStatusMessage(const QString &message);
 
+    int flagGyro;
+
     Ui::MainWindow *ui;
     QLabel *status;
     Console *console;
