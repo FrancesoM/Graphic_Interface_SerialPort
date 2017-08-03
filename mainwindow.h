@@ -77,6 +77,7 @@ QT_END_NAMESPACE
 
 class Console;
 class SettingsDialog;
+class Classifier;
 
 class MainWindow : public QMainWindow
 {
@@ -100,7 +101,6 @@ private slots:
 
     void handleError(QSerialPort::SerialPortError error);
 
-
     void on_StartButton_clicked();
 
     void on_StopButton_clicked();
@@ -108,6 +108,8 @@ private slots:
     void on_CalibrateButton_clicked();
 
     void on_ChangeButton_clicked();
+
+    void broadcastTranslation();
 
 private:
     void initActionsConnections();
@@ -128,9 +130,11 @@ private:
     SettingsDialog *settings;
     SettingsDialog *settingsGyro;
     QSerialPort *serial;
-    QSerialPort *serialGyro;
+    QSerialPort *serialGyro;    
     QQueue<quint8> bytesQueue;
     QQueue<quint8> bytesQueueGyro;
+
+    Classifier *classifier;
 
     //Fix this thing with a template, we need an instance of putData in the console
     //That is able to take any kind of data.

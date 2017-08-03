@@ -435,13 +435,8 @@ void MainWindow::initActionsConnections()
     connect(ui->actionTranslate, &QAction::triggered, this, &MainWindow::broadcastTranslation);
 }
 
-void MainWindow::broadcastTranslation()
-{
-    QVector3D* temp = new QVector3D(ui->LineX->text().toFloat(),
-                               ui->LineY->text().toFloat(),
-                               ui->LineZ->text().toFloat() );
-
-    classifier->setCylinderTranslation(temp);
+void MainWindow::broadcastTranslation(){
+    //QVector3D temp()
 }
 
 void MainWindow::showStatusMessage(const QString &message)

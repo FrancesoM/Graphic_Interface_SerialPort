@@ -76,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TwoGraphsLayout->addWidget(console);
     ui->TwoGraphsLayout->addWidget(consoleGyro);
 
-
 //! [1]
     serial = new QSerialPort(this);
     serialGyro = new QSerialPort(this);
@@ -431,17 +430,6 @@ void MainWindow::initActionsConnections()
     //connect(ui->actionClear, &QAction::triggered, console, &Console::clear);
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
-
-    connect(ui->actionTranslate, &QAction::triggered, this, &MainWindow::broadcastTranslation);
-}
-
-void MainWindow::broadcastTranslation()
-{
-    QVector3D* temp = new QVector3D(ui->LineX->text().toFloat(),
-                               ui->LineY->text().toFloat(),
-                               ui->LineZ->text().toFloat() );
-
-    classifier->setCylinderTranslation(temp);
 }
 
 void MainWindow::showStatusMessage(const QString &message)

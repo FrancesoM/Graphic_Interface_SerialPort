@@ -9,5 +9,6 @@
         <file>images/play.png</file>
         <file>images/UHSett.ico</file>
         <file>images/GyroSett.ico</file>
+        <file>images/tra.png</file>
     </qresource>
 </RCC>
