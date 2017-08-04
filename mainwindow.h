@@ -109,7 +109,7 @@ private slots:
 
     void on_ChangeButton_clicked();
 
-    void broadcastTranslation();
+    void broadcastTransformation();
 
 private:
     void initActionsConnections();

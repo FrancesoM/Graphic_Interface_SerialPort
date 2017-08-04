@@ -20,6 +20,7 @@
 #include <Qt3DInput/QInputAspect>
 
 #include <Qt3DExtras/qtorusmesh.h>
+#include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qmaterial.h>
@@ -63,10 +64,11 @@ public:
     ~Classifier();
 
 public slots:
-    void setRoll(float angle);
-    void setPitch(float angle);
-    void setYaw(float angle);
-    void setCylinderTranslation(QVector3D *t);
+//    void setRoll(float angle);
+//    void setPitch(float angle);
+//    void setYaw(float angle);
+//    void setCylinderTranslation(QVector3D &t);
+    void transform(float angle, QVector3D &axis, QString msg);
 
 
 
@@ -75,7 +77,16 @@ private:
     Qt3DExtras::Qt3DWindow *view;
     QWidget* container;
     Qt3DCore::QEntity *m_cylinderEntity;
+    Qt3DCore::QEntity *x;
+    Qt3DCore::QEntity *y;
+    Qt3DCore::QEntity *z;
+
     Qt3DCore::QTransform *cylinderTransform;
+    Qt3DCore::QTransform *xtransform;
+    Qt3DCore::QTransform *ytransform;
+    Qt3DCore::QTransform *ztransform;
+
+    QMatrix4x4 m_matrix;
 
 };
 

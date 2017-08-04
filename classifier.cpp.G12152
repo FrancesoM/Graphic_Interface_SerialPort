@@ -30,12 +30,6 @@ Classifier::Classifier(QWidget *parent) :
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
-    // For camera controls
-    Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
-    camController->setLinearSpeed( 50.0f );
-    camController->setLookSpeed( 180.0f );
-    camController->setCamera(cameraEntity);
-
     //Create a light with some intensity and place as the position of the camera
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(rootEntity);
     Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(lightEntity);
@@ -59,7 +53,7 @@ Classifier::Classifier(QWidget *parent) :
     // Then create a transformation that will be applied to the cylinder
     cylinderTransform = new Qt3DCore::QTransform();
     cylinderTransform->setScale(1.5f);
-    cylinderTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 0.0f));
+    cylinderTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 45.0f));
     cylinderTransform->setTranslation(QVector3D(0.0f, 0.0f, 0.0f));
 
     //Apply the material to the cylider
@@ -110,7 +104,7 @@ Classifier::Classifier(QWidget *parent) :
     xtransform = new Qt3DCore::QTransform();
     xtransform->setScale(1.5f);
     xtransform->setTranslation(QVector3D(0.0f, 0.0f, 0.0f));
-    xtransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 0.0f));
+    xtransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 45.0f));
     QMatrix4x4 Xmatrix = xtransform->matrix();
     //Xmatrix.setToIdentity();
     Xmatrix.rotate(90.0f,QVector3D(1.0f, 0.0f, 0.0f));
@@ -119,7 +113,7 @@ Classifier::Classifier(QWidget *parent) :
     ytransform = new Qt3DCore::QTransform();
     ytransform->setScale(1.5f);
     ytransform->setTranslation(QVector3D(0.0f, 0.0f, 0.0f));
-    ytransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 0.0f));
+    ytransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 45.0f));
     QMatrix4x4 Ymatrix = ytransform->matrix();
     //Ymatrix.setToIdentity();
     Ymatrix.rotate(90.0f,QVector3D(0.0f, 1.0f, 0.0f));
@@ -128,7 +122,7 @@ Classifier::Classifier(QWidget *parent) :
     ztransform = new Qt3DCore::QTransform();
     ztransform->setScale(1.5f);
     ztransform->setTranslation(QVector3D(0.0f, 0.0f, 0.0f));
-    ztransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 0.0f));
+    ztransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 45.0f));
     QMatrix4x4 Zmatrix = ztransform->matrix();
     //Zmatrix.setToIdentity();
     Zmatrix.rotate(90.0f,QVector3D(0.0f, 0.0f, 1.0f));
@@ -176,6 +170,8 @@ void Classifier::transform(float angle, QVector3D &axis, QString msg)
     }
     m_matrix.rotate(angle, axis);
     cylinderTransform->setMatrix(m_matrix);
+
+
 }
 
 

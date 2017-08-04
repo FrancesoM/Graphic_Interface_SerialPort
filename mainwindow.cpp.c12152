@@ -243,7 +243,6 @@ void MainWindow::readData()
 void MainWindow::readDataGyro()
 {
     char received[4];
-    QVector3D axisRotation(0.0f,0.0f,1.0f);
 
     QByteArray data = serialGyro->readAll();
     for(int i = 0;i<data.length();i++){
@@ -271,7 +270,7 @@ void MainWindow::readDataGyro()
                     //Plot the angle
                     qDebug() << currentAngle;
                     consoleGyro->putData(currentAngle);
-                    classifier->transform(currentAngle[0],axisRotation,"absolute");
+                    classifier->transform(currentAngle[0],axis_rotation,"absolute");
 
                     //Clean the queue up to the offset + the frame
                     for(int i = 0;i<offset+(3+2+4);i++) bytesQueueGyro.dequeue();
