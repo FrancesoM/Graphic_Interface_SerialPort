@@ -166,7 +166,7 @@ Classifier::~Classifier()
     delete ui;
 }
 
-void Classifier::transform(float angle, QVector3D &axis, QString msg)
+void Classifier::transform(float pitch, float yaw, float roll, QString msg)
 {
     if(msg == "successive"){
         m_matrix = cylinderTransform->matrix();
@@ -174,7 +174,8 @@ void Classifier::transform(float angle, QVector3D &axis, QString msg)
     if(msg == "absolute"){
         m_matrix.setToIdentity();
     }
-    m_matrix.rotate(angle, axis);
+
+    m_matrix.rotate(QQuaternion::fromEulerAngles(pitch,yaw,roll));
     cylinderTransform->setMatrix(m_matrix);
 }
 

@@ -68,7 +68,7 @@ public slots:
 //    void setPitch(float angle);
 //    void setYaw(float angle);
 //    void setCylinderTranslation(QVector3D &t);
-    void transform(float angle, QVector3D &axis, QString msg);
+    void transform(float pitch, float yaw, float roll, QString msg);
 
 
 
