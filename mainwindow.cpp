@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 //! [0]
     ui->setupUi(this);
-    console = new Console(8,-500,+500);
+    console = new Console(NUM_AXES,DOWN_AXIS,UP_AXIS);
     console->setEnabled(false);
 
     consoleGyro = new Console(1,-180,180);
@@ -245,16 +245,41 @@ void MainWindow::about()
 
 void MainWindow::readData()
 {
+    /*********************************************************************************
+     *                    TEMPLATE TO READ THE DESIRED PACKETS                       *
+     *                  CHANGE ONLY PARTS THAT START WITH "User:"                    *
+     *********************************************************************************/
+
+    /*********************************************************************************
+     *    User:Choose your packet size and create container arrays to store them     *
+     *********************************************************************************/
+
     //Packet size = 2(start) + 8x2(channels) + 3x2(angles) + 3 = 2+16+6+3 = 27
-    char receivedPhotoReflectors[16]; //8 values, qint16 each
-    char receivedXangle[2]; //qint16 (int is 2 bytes long on avr micros)
-    char receivedYangle[2];
-    char receivedZangle[2];
 
-    qint16 reconstructedXangle;
-    qint16 reconstructedYangle;
-    qint16 reconstructedZangle;
+//    char receivedPhotoReflectors[16]; //8 values, qint16 each
+//    char receivedXangle[2]; //qint16 (int is 2 bytes long on avr micros)
+//    char receivedYangle[2];
+//    char receivedZangle[2];
 
+//    qint16 reconstructedXangle;
+//    qint16 reconstructedYangle;
+//    qint16 reconstructedZangle;
+
+//    int packetSize = 27;
+//    int nData = NCHANNEL;
+//    QVector<float> yVec = QVector<float>(nData);
+
+    //Packet size = 2(start) + 3*2(x,y,z) + 3(stop) = 11
+
+    quint8 receivedAxis[6];
+    int packetSize = 11;
+    int nData = 3;  //x, y, z
+    QVector<float> yVec = QVector<float>(nData);
+    QVector<uint16_t> temp = QVector<uint16_t>(nData);
+
+    /*********************************************************************************
+     *                      Start to collect data inside the queue                   *
+     *********************************************************************************/
 
     QByteArray data = serial->readAll();
     for(int i = 0;i<data.length();i++){
@@ -262,70 +287,89 @@ void MainWindow::readData()
         this->bytesQueue.enqueue(data[i]);
     }
 
-    if(bytesQueue.length() >= 27)
+    /*********************************************************************************
+     *                      Start to decode data in the queue                        *
+     *********************************************************************************/
+
+    if(bytesQueue.length() >= packetSize)
     {
-        for(int offset = 0;offset < bytesQueue.length() - 27;offset++)
+        for(int offset = 0;offset < bytesQueue.length() - packetSize;offset++)
         {
             if(bytesQueue[offset] == 0x00 &&
                bytesQueue[offset+1] == 0x00 &&
-               bytesQueue[offset+24] == 0x21 &&
-               bytesQueue[offset+25] == 0x21 &&
-               bytesQueue[offset+26] == 0x21 )
+               bytesQueue[offset+packetSize-3] == 0x21 &&
+               bytesQueue[offset+packetSize-2] == 0x21 &&
+               bytesQueue[offset+packetSize-1] == 0x21 )
             {
-                //MSB comes first but in architecture it is stored last
-                receivedPhotoReflectors[0] = bytesQueue[offset+2];      //--
-                receivedPhotoReflectors[1] = bytesQueue[offset+3];      //ch1
-                receivedPhotoReflectors[2] = bytesQueue[offset+4];      //--
-                receivedPhotoReflectors[3] = bytesQueue[offset+5];      //ch2
-                receivedPhotoReflectors[4] = bytesQueue[offset+6];      //--
-                receivedPhotoReflectors[5] = bytesQueue[offset+7];      //ch3
-                receivedPhotoReflectors[6] = bytesQueue[offset+8];      //--
-                receivedPhotoReflectors[7] = bytesQueue[offset+9];      //ch4
-                receivedPhotoReflectors[8] = bytesQueue[offset+10];     //--
-                receivedPhotoReflectors[9] = bytesQueue[offset+11];     //ch5
-                receivedPhotoReflectors[10] = bytesQueue[offset+12];     //--
-                receivedPhotoReflectors[11] = bytesQueue[offset+13];     //ch6
-                receivedPhotoReflectors[12] = bytesQueue[offset+14];     //--
-                receivedPhotoReflectors[13] = bytesQueue[offset+15];     //ch7
-                receivedPhotoReflectors[14] = bytesQueue[offset+16];     //--
-                receivedPhotoReflectors[15] = bytesQueue[offset+17];     //ch8
 
-                receivedXangle[0] = bytesQueue[offset+18];
-                receivedXangle[1] = bytesQueue[offset+19];
-                receivedYangle[0] = bytesQueue[offset+20];
-                receivedYangle[1] = bytesQueue[offset+21];
-                receivedZangle[0] = bytesQueue[offset+22];
-                receivedZangle[1] = bytesQueue[offset+23];
+    /*********************************************************************************
+     *         User:Manually transfer bytes from queue to the container array        *
+     *********************************************************************************/
+
+//                //MSB comes first but in architecture it is stored last
+//                receivedPhotoReflectors[0] = bytesQueue[offset+2];      //--
+//                receivedPhotoReflectors[1] = bytesQueue[offset+3];      //ch1
+//                receivedPhotoReflectors[2] = bytesQueue[offset+4];      //--
+//                receivedPhotoReflectors[3] = bytesQueue[offset+5];      //ch2
+//                receivedPhotoReflectors[4] = bytesQueue[offset+6];      //--
+//                receivedPhotoReflectors[5] = bytesQueue[offset+7];      //ch3
+//                receivedPhotoReflectors[6] = bytesQueue[offset+8];      //--
+//                receivedPhotoReflectors[7] = bytesQueue[offset+9];      //ch4
+//                receivedPhotoReflectors[8] = bytesQueue[offset+10];     //--
+//                receivedPhotoReflectors[9] = bytesQueue[offset+11];     //ch5
+//                receivedPhotoReflectors[10] = bytesQueue[offset+12];     //--
+//                receivedPhotoReflectors[11] = bytesQueue[offset+13];     //ch6
+//                receivedPhotoReflectors[12] = bytesQueue[offset+14];     //--
+//                receivedPhotoReflectors[13] = bytesQueue[offset+15];     //ch7
+//                receivedPhotoReflectors[14] = bytesQueue[offset+16];     //--
+//                receivedPhotoReflectors[15] = bytesQueue[offset+17];     //ch8
+
+//                receivedXangle[0] = bytesQueue[offset+18];
+//                receivedXangle[1] = bytesQueue[offset+19];
+//                receivedYangle[0] = bytesQueue[offset+20];
+//                receivedYangle[1] = bytesQueue[offset+21];
+//                receivedZangle[0] = bytesQueue[offset+22];
+//                receivedZangle[1] = bytesQueue[offset+23];
+
+                  receivedAxis[0] = bytesQueue[offset+2]+0x0A;
+                  receivedAxis[1] = bytesQueue[offset+3];
+                  receivedAxis[2] = bytesQueue[offset+4];
+                  receivedAxis[3] = bytesQueue[offset+5];
+                  receivedAxis[4] = bytesQueue[offset+6];
+                  receivedAxis[5] = bytesQueue[offset+7];
+
+                  for(int i = 0;i<nData*2;i++){
+                      qDebug("%04x",receivedAxis[i]); // << receivedAxis[i];
+                  }
+
+                  qDebug() << "---------------------------";
+
 
                 //Now save the values
-                for(int i = 0;i<NCHANNEL;i++)
+                for(int i = 0;i<nData;i++)
                 {
                     //The reinterpret cast is needed to convert the bytes into the real number
                     //Then we cast to float to pass the correct type to putData
-                    yVec[i] = (float)*reinterpret_cast<qint16*>(&receivedPhotoReflectors[2*i]);
+                    //yVec[i] = (float)*reinterpret_cast<quint16*>(&receivedAxis[2*i]);
+                    temp[i] = (((uint16_t) receivedAxis[2*i])<<8) + receivedAxis[2*i+1];
+                    yVec[i] = (float) temp[i];
                     //qDebug() << yVec[i];
 
                 }
                 console->putData(yVec);
+                qDebug() << yVec;
 
-                reconstructedXangle = *reinterpret_cast<qint16*>(receivedXangle);
-                reconstructedYangle = *reinterpret_cast<qint16*>(receivedYangle);
-                reconstructedZangle = *reinterpret_cast<qint16*>(receivedZangle);
+//                reconstructedXangle = *reinterpret_cast<qint16*>(receivedXangle);
+//                reconstructedYangle = *reinterpret_cast<qint16*>(receivedYangle);
+//                reconstructedZangle = *reinterpret_cast<qint16*>(receivedZangle);
 
-//                qDebug() << " x" <<
-//                            reconstructedXangle <<
-//                            "y" <<
-//                            reconstructedYangle <<
-//                            "z" <<
-//                            reconstructedZangle << "\n";
-
-                classifier->transform(reconstructedXangle,
-                                      reconstructedYangle,
-                                      reconstructedZangle,
-                                      "absolute");
+//                classifier->transform(reconstructedXangle,
+//                                      reconstructedYangle,
+//                                      reconstructedZangle,
+//                                      "absolute");
 
                 //Delete from the queue everything that has been used so far
-                for(int del = 0; del < offset + 27; del ++){
+                for(int del = 0; del < offset + packetSize; del ++){
                     bytesQueue.dequeue();
                 }
 

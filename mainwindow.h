@@ -63,6 +63,9 @@
 #include <QFile>
 
 #define NCHANNEL 8
+#define NUM_AXES 3
+#define UP_AXIS 70000
+#define DOWN_AXIS 0
 //#define CHECK_FRAME(buf) ((buf[0] == 0x00) && (buf[5] == 0x21) && (buf[6] == 0x21) && (buf[7] == 0x21) )
 
 QT_BEGIN_NAMESPACE
@@ -90,6 +93,7 @@ public:
 private slots:
     void about();
 
+
     void readData();
     void readDataGyro();
 
@@ -112,8 +116,11 @@ private slots:
     void broadcastTransformation();
 
 private:
+    /*Connects the required signals and slots*/
     void initActionsConnections();
+    /*Open the serial port "port" relative to "msg" using the settings in "s", enabling the console "c"*/
     void openSerialPort(SettingsDialog *s, QSerialPort *port, Console *c, QString msg);
+    /*Close the serial port "port" relative to "msg" and disable the console "c"*/
     void closeSerialPort(QSerialPort *port, Console *c, QString msg);
     //in case of an error both the ports must be closed
     void closeSerialPort();
@@ -138,7 +145,7 @@ private:
 
     //Fix this thing with a template, we need an instance of putData in the console
     //That is able to take any kind of data.
-    QVector<float> yVec = QVector<float>(NCHANNEL);
+    //QVector<float> yVec = QVector<float>(NCHANNEL);
     QVector<float> currentAngle = QVector<float>(1);
 
     int flag_can_save;
